@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 interface HeroSectionProps {
   onRequestAccess: () => void
@@ -33,12 +33,6 @@ const conversations = [
   },
 ]
 
-// Data particle labels that will flow into the logo
-const dataLabels = [
-  "Revenue", "Members", "Customers", "Washes", "Weather", "Labor", 
-  "Marketing", "Churn", "MRR", "LTV", "Transactions", "Sessions"
-]
-
 export function HeroSection({ onRequestAccess }: HeroSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [displayedQuestion, setDisplayedQuestion] = useState("")
@@ -46,40 +40,6 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
   const [isTypingQuestion, setIsTypingQuestion] = useState(true)
   const [isTypingResponse, setIsTypingResponse] = useState(false)
   const [showArtifact, setShowArtifact] = useState(false)
-  const [scrollProgress, setScrollProgress] = useState(0)
-  const [animationPhase, setAnimationPhase] = useState(0)
-  // Phase 0: particles orbiting
-  // Phase 1: particles converging to center
-  // Phase 2: logo glowing
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return
-      const scrollTop = window.scrollY
-      const triggerPoint = 100
-      const progress = Math.min(scrollTop / triggerPoint, 1)
-      setScrollProgress(progress)
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  // Animation sequence for data particles
-  useEffect(() => {
-    const timings = [
-      { delay: 2500, next: 1 }, // Orbiting, then converge
-      { delay: 1500, next: 2 }, // Converging, then glow
-      { delay: 10000, next: 0 }, // Glowing, then reset
-    ]
-    
-    const timer = setTimeout(() => {
-      setAnimationPhase(timings[animationPhase].next)
-    }, timings[animationPhase].delay)
-    
-    return () => clearTimeout(timer)
-  }, [animationPhase])
 
   useEffect(() => {
     const conversation = conversations[currentIndex]
@@ -128,133 +88,9 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
   const currentConversation = conversations[currentIndex]
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-white">
-      {/* Opening splash - AMP Logo + Introducing AMP MCP */}
-      <div 
-        className="min-h-screen flex flex-col items-center justify-center px-6 relative"
-        style={{
-          opacity: 1 - scrollProgress * 0.3,
-          transform: `translateY(${-scrollProgress * 50}px)`,
-        }}
-      >
-        {/* Data flow animation container */}
-        <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center mb-8">
-          {/* Orbiting/converging data particles */}
-          {dataLabels.map((label, i) => {
-            const angle = (i / dataLabels.length) * 360
-            const radius = animationPhase === 0 ? 120 : animationPhase === 1 ? 40 : 0
-            const opacity = animationPhase === 2 ? 0 : 1
-            const scale = animationPhase === 2 ? 0.5 : 1
-            
-            return (
-              <div
-                key={label}
-                className="absolute transition-all duration-1000 ease-in-out"
-                style={{
-                  transform: `rotate(${angle}deg) translateX(${radius}px) rotate(-${angle}deg) scale(${scale})`,
-                  opacity,
-                  transitionDelay: `${i * 50}ms`,
-                }}
-              >
-                <div 
-                  className="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap"
-                  style={{
-                    background: animationPhase >= 1 
-                      ? 'rgba(11, 117, 225, 0.2)' 
-                      : 'rgba(11, 117, 225, 0.1)',
-                    color: '#0B75E1',
-                    boxShadow: animationPhase >= 1 
-                      ? '0 0 10px rgba(11, 117, 225, 0.4)' 
-                      : 'none',
-                    transition: 'all 0.5s ease',
-                  }}
-                >
-                  {label}
-                </div>
-              </div>
-            )
-          })}
-          
-          {/* Rotating ring effect */}
-          <div 
-            className="absolute inset-4 rounded-full border-2 border-dashed transition-all duration-1000"
-            style={{
-              borderColor: animationPhase >= 1 ? 'transparent' : 'rgba(11, 117, 225, 0.15)',
-              animation: animationPhase === 0 ? 'spin 20s linear infinite' : 'none',
-            }}
-          />
-          
-          {/* Inner glow ring */}
-          <div 
-            className="absolute inset-12 rounded-full transition-all duration-1000"
-            style={{
-              background: animationPhase >= 2 
-                ? 'radial-gradient(circle, rgba(11, 117, 225, 0.15) 0%, transparent 70%)' 
-                : 'transparent',
-              boxShadow: animationPhase >= 2 
-                ? '0 0 60px rgba(11, 117, 225, 0.4), inset 0 0 40px rgba(11, 117, 225, 0.2)' 
-                : 'none',
-            }}
-          />
-          
-          {/* AMP Logo - center */}
-          <div 
-            className="relative z-10 transition-all duration-700"
-            style={{
-              filter: animationPhase >= 2 
-                ? 'drop-shadow(0 0 30px rgba(11, 117, 225, 0.8)) drop-shadow(0 0 60px rgba(11, 117, 225, 0.5))' 
-                : 'none',
-              transform: animationPhase >= 2 ? 'scale(1.05)' : 'scale(1)',
-            }}
-          >
-            <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/AMP_Logo_CobaltNavy-6x4O9yK3ShNZbnkxGLIShdohCCFDGq.png"
-              alt="AMP"
-              className="h-16 md:h-24 w-auto"
-            />
-          </div>
-        </div>
-        
-        {/* Introducing badge */}
-        <div 
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#EDF2F9] border border-[#0B75E1]/20 mb-6 transition-all duration-700"
-          style={{
-            boxShadow: animationPhase >= 2 
-              ? '0 0 20px rgba(11, 117, 225, 0.3)' 
-              : 'none',
-          }}
-        >
-          <div 
-            className="w-2 h-2 rounded-full bg-[#0B75E1] transition-all duration-500"
-            style={{
-              boxShadow: animationPhase >= 2 
-                ? '0 0 8px rgba(11, 117, 225, 0.8)' 
-                : 'none',
-            }}
-          />
-          <span className="text-sm md:text-base text-[#003264] font-semibold tracking-wide">Introducing AMP MCP</span>
-        </div>
-
-        {/* Scroll indicator */}
-        <div 
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 transition-opacity duration-300"
-          style={{ opacity: 1 - scrollProgress * 2 }}
-        >
-          <span className="text-xs font-medium uppercase tracking-widest">Scroll to explore</span>
-          <div className="w-6 h-10 rounded-full border-2 border-gray-300 flex items-start justify-center p-2">
-            <div className="w-1 h-2 bg-gray-400 rounded-full animate-bounce" />
-          </div>
-        </div>
-      </div>
-
-      {/* Main content - fades in on scroll */}
-      <div 
-        className="relative pb-20 bg-gradient-to-b from-white via-[#EDF2F9]/50 to-white transition-all duration-300"
-        style={{
-          opacity: scrollProgress,
-          transform: `translateY(${(1 - scrollProgress) * 30}px)`,
-        }}
-      >
+    <section className="relative overflow-hidden bg-white">
+      {/* Main content */}
+      <div className="relative pt-32 pb-20 bg-gradient-to-b from-white via-[#EDF2F9]/50 to-white">
         {/* Subtle background accents */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 w-72 h-72 bg-[#0B75E1]/5 rounded-full blur-3xl" />
@@ -264,6 +100,11 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           {/* Hero Text Content */}
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-16">
+            {/* Introducing badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#EDF2F9] border border-[#0B75E1]/20 mb-8">
+              <div className="w-2 h-2 rounded-full bg-[#0B75E1]" />
+              <span className="text-sm text-[#003264] font-semibold tracking-wide">Introducing AMP MCP</span>
+            </div>
             {/* Main headline */}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#003264] text-balance mb-6">
               Your car wash runs on AMP.{" "}
@@ -455,14 +296,6 @@ export function HeroSection({ onRequestAccess }: HeroSectionProps) {
           </div>
         </div>
       </div>
-      
-      {/* CSS for spin animation */}
-      <style jsx>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </section>
   )
 }

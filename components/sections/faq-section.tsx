@@ -18,15 +18,11 @@ const faqs = [
   },
   {
     question: "How is my data protected?",
-    answer: "Your data remains secure within the AMP infrastructure. AMP MCP uses your existing AMP authentication and role-based permissions to control access. Data is never stored by the AI assistants, and all queries are logged for audit purposes."
+    answer: "You authenticate with your existing AMP credentials, so there is no separate login to manage. Access is restricted to approved roles managed in the AMP platform, meaning each user only sees the data their role permits. All data is encrypted in transit and at rest, and every request is captured in a full audit trail."
   },
   {
     question: "What kind of questions can I ask?",
     answer: "You can ask any question related to your car wash operations, including performance metrics, revenue analysis, membership trends, customer engagement, labor data, marketing effectiveness, weather impact, and more. With access to 89 data sources, if it is in your AMP system, you can ask about it."
-  },
-  {
-    question: "Why start with Claude instead of ChatGPT?",
-    answer: "Claude by Anthropic offers exceptional analytical capabilities and was the first major AI assistant to support the MCP protocol. We chose to launch with Claude to provide the best possible experience, with ChatGPT and Gemini support planned for future releases."
   },
   {
     question: "How much does AMP MCP cost?",
@@ -35,10 +31,6 @@ const faqs = [
   {
     question: "How do I get access?",
     answer: "Click the Request Access button and submit your information. Our team will review your request and follow up with next steps, including verification of your AMP account and setup instructions."
-  },
-  {
-    question: "Can my entire team use AMP MCP?",
-    answer: "Yes, team access is controlled through your existing AMP role structure. Each user logs in with their own AMP credentials and sees only the data they are authorized to access based on their role."
   }
 ]
 
